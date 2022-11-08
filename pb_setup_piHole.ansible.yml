@@ -1,0 +1,24 @@
+---
+- name: Finish piHole installation
+  hosts: piHole
+  tasks:
+    - name: copy lancache entries
+      ansible.builtin.copy:
+        src: /root/ansible/files/piHole/custom.list
+        dest: /etc/pihole/custom.list
+    - name: Change pihole webgui password
+      ansible.builtin.shell: pihole -a -p <<passwd>>
+    - name: Install unbound
+      ansible.builtin.apt:
+        name: unbound
+        state: latest
+    - name: Configure unbound
+      ansible.builtin.copy:
+        src: /root/ansible/files/piHole/unbound/pi-hole.conf
+        dest: /etc/unbound/unbound.conf.d/pi-hole.conf
+    - name: download root hints
+      ansible.builtin.get_url:
+        url: https://www.internic.net/domain/named.root
+        dest: /var/lib/unbound/root.hints
+    - ansible.builtin.lineinfile: create=yes regexp="NONEXISTENTLINE" dest=/etc/dnsmasq.d/99-edns.conf line="edns-packet-max=1232" state=present
+        

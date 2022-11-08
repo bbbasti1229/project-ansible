@@ -1,0 +1,12 @@
+---
+- name: Install checkmk agent
+  hosts: all
+  tasks:
+    - name: download deb
+      ansible.builtin.get_url:
+        url: http://checkmk/monitoring/check_mk/agents/check-mk-agent_2.1.0p15-1_all.deb
+        dest: /root/agent.deb
+    - name: install agent
+      ansible.builtin.apt:
+        deb: /root/agent.deb
+    

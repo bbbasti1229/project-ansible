@@ -1,0 +1,23 @@
+---
+- name: Install checkmk
+  hosts: checkmk
+  tasks:
+    - name: Download checkmk.deb
+      ansible.builtin.get_url:
+        url: https://download.checkmk.com/checkmk/2.1.0p15/check-mk-raw-2.1.0p15_0.bullseye_amd64.deb
+        dest: /root/checkmk.deb
+    - name: Install checkmk.deb
+      ansible.builtin.apt:
+        deb: /root/checkmk.deb
+    - name: test checkmd installation
+      ansible.builtin.shell: omd version
+      register: omd_test
+    - name: create checkmk instance
+      ansible.builtin.shell: omd create monitoring
+      register: omd_create
+      when: omd_test.stdout.find('OMD - Open Monitoring Distribution Version') != -1
+    - ansible.builtin.lineinfile: create=yes regexp="NONEXISTENTLINE" dest=/root/omd_create.log line="{{omd_create.stdout_lines}}" state=present
+    - name: start checkmk instance
+      ansible.builtin.shell: omd start monitoring
+      register: omd_start
+    - debug: var=omd_start.stdout_lines

@@ -1,0 +1,34 @@
+---
+- name: Initialize contaner and install base packages
+  hosts: container
+  tasks:
+    - name: set timezone
+      timezone:
+        name: Europe/Berlin
+    - ansible.builtin.import_tasks: tasks/update_packages.ansible.yml
+    - name: base packages
+      ansible.builtin.apt:
+        pkg:
+          - strace
+          - tcpdump
+          - screen
+          - iftop
+          - neovim
+          - bpytop
+          - sudo
+          - curl
+          - wget
+          - ntp
+        state: latest
+    - name: check ntp
+      ansible.builtin.systemd:
+        name: ntp
+        state: started
+        enabled: yes
+- name: prepare piHole installation
+  hosts: piHole
+  tasks:
+    - name: Download piHole installation script
+      ansible.builtin.get_url:
+        url: https://install.pi-hole.net
+        dest: /root/install-piHole.sh

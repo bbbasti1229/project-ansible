@@ -1,0 +1,5 @@
+---
+- name: Update installed packages and restart sshd
+  hosts: container
+  tasks:
+    - ansible.builtin.import_tasks: tasks/update_packages.ansible.yml

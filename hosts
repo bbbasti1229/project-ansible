@@ -1,0 +1,11 @@
+[all:vars]
+ansible_user=<<user>>
+ansible_connection=ssh
+ansible_private_key_file=<<path-to-key>>
+
+[container]
+checkmk ansible_host=<<ip>>
+piHole ansible_host=<<ip>>
+
+[pve]
+home-ve ansible_host=<<ip>>

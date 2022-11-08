@@ -1,0 +1,8 @@
+---
+- name: update PVE host
+  hosts: pve
+  tasks:
+    - name: update && dist-upgrade
+      ansible.builtin.shell: apt update && apt dist-upgrade -y
+      register: update
+    - ansible.builtin.lineinfile: create=yes regexp="NONEXISTENTLINE" dest=/root/update.log line="{{update.stdout_lines}}" state=present

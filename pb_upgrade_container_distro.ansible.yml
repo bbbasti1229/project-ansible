@@ -1,0 +1,9 @@
+---
+- name: Upgrade debian distro
+  hosts: container
+  tasks:
+    - name: Upgrade the OS
+      ansible.builtin.apt:
+        upgrade: dist
+    - name: reboot
+      ansible.builtin.reboot:
